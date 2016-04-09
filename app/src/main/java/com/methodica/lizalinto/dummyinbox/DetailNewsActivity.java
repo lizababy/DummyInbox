@@ -33,10 +33,7 @@ public class DetailNewsActivity extends AppCompatActivity {
         webView.setWebViewClient(new MyWebViewClient());
         webView.loadUrl(url);
     }
-        //webView.getSettings().setJavaScriptEnabled(true);
-        //webView.loadUrl(intent.getStringExtra("detailLink"));
 
-        //progressDialog.hide();
 
 
   class MyWebViewClient extends WebViewClient {

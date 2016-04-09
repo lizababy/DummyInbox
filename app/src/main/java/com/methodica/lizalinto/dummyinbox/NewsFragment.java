@@ -95,7 +95,7 @@ public class NewsFragment extends Fragment {
             // ------Showing progress dialog-------
             mProgressDialog = new ProgressDialog(getActivity());
             mProgressDialog.setCancelable(false);
-            String stringUrl = "https://ajax.googleapis.com/ajax/services/search/news?v=3.0&q=all";
+            String stringUrl = "https://ajax.googleapis.com/ajax/services/search/news?v=1.0&q=android";
             ConnectivityManager connMgr = (ConnectivityManager)
                     getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -104,9 +104,6 @@ public class NewsFragment extends Fragment {
             } else {
                 Log.d("NetworkingError1", "No network");
             }
-            // String url1 = "http://www.washingtonpost.com/wp-srv/simulation/simulation_test.json";
-
-            //new DownloadNewsTask().execute("http://news.google.com/news?hl=en&pz=1ned=us&q=apple");
         }
 
     }
@@ -144,9 +141,9 @@ public class NewsFragment extends Fragment {
         }
     }
     // Reads an InputStream and converts it to a String.
-    public String readIt(InputStream stream) throws IOException, UnsupportedEncodingException {
-        Reader reader = null;
-        reader = new InputStreamReader(stream, "UTF-8");
+    public String readIt(InputStream stream) throws IOException {
+
+        Reader reader = new InputStreamReader(stream, "UTF-8");
         BufferedReader bufferedReader = new BufferedReader(reader);
         StringBuilder result = new StringBuilder();
         String line;
@@ -177,7 +174,7 @@ public class NewsFragment extends Fragment {
 
                 Log.d("Result", result);
 
-                parseJson(result);
+                parseGoogleNewsApiJson(result);
             } catch (IOException e) {
                 Log.d("NetworkError", "Unable to retrieve web page. URL may be invalid.");
             } catch (JSONException e) {
@@ -189,14 +186,26 @@ public class NewsFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            if(NewsContent.ITEMS.size() > 0) {
+                mRecyclerAdapter.notifyDataSetChanged();
+                new DownloadNewsImageTask().execute();
+            }else{
+                InputStream is = getResources().openRawResource(R.raw.google_news_sample);
+               try {
+                    String read = readIt(is);
+                    parseGoogleNewsApiJson(read);
 
-            //mRecyclerView.setAdapter(mRecyclerAdapter);
-            mRecyclerAdapter.notifyDataSetChanged();
-            new DownloadNewsImageTask().execute();
+                    mRecyclerAdapter.notifyDataSetChanged();
+                    new DownloadNewsImageTask().execute();
+
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
-    private void parseJson(String result) throws JSONException {
+    private void parseGoogleNewsApiJson(String result) throws JSONException {
 
         JSONObject jsonResponseData= new JSONObject(result);
         JSONObject jsonResultsObject = jsonResponseData.getJSONObject("responseData");
@@ -210,7 +219,6 @@ public class NewsFragment extends Fragment {
             String publisher = jsonNewsObject.getString("publisher");
             String published_date = jsonNewsObject.getString("publishedDate");
             String unescapedUrl = jsonNewsObject.getString("unescapedUrl");
-            //String image = jsonNewsObject.getString("titleNoFormatting");
             JSONObject imageObject = jsonNewsObject.getJSONObject("image");
             String imageUrl = imageObject.getString("url");
 
@@ -258,13 +266,11 @@ public class NewsFragment extends Fragment {
          * Updating progress bar
          * */
         protected void onProgressUpdate(String... progressMessage) {
-            // setting progress percentage
             mProgressDialog.setMessage("Downloaded " + progressMessage[0] + "images");
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            //mRecyclerView.setAdapter(mRecyclerAdapter);
             mRecyclerAdapter.notifyDataSetChanged();
             hideProgressDialog();
         }
@@ -272,6 +278,6 @@ public class NewsFragment extends Fragment {
 
     public interface OnNewsFragmentInteractionListener {
 
-        public void OnNewsFragmentInteraction(NewsItem mItem);
+         void OnNewsFragmentInteraction(NewsItem mItem);
     }
 }
