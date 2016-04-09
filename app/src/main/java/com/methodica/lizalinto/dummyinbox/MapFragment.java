@@ -276,7 +276,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 // Adding all the points in the route to LineOptions
                 lineOptions.addAll(points);
-                lineOptions.width(40);
+                lineOptions.width(35);
                 lineOptions.color(Color.GREEN);
 
             }

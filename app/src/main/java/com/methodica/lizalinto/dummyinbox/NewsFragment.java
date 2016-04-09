@@ -186,22 +186,25 @@ public class NewsFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+
             if(NewsContent.ITEMS.size() > 0) {
+
                 mRecyclerAdapter.notifyDataSetChanged();
-                new DownloadNewsImageTask().execute();
-            }else{
+
+            }else{//Google news response is null; So reading from raw Json file stored in raw resource folder
+
                 InputStream is = getResources().openRawResource(R.raw.google_news_sample);
                try {
                     String read = readIt(is);
                     parseGoogleNewsApiJson(read);
-
                     mRecyclerAdapter.notifyDataSetChanged();
-                    new DownloadNewsImageTask().execute();
-
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
                 }
             }
+            hideProgressDialog();
+
+            new DownloadNewsImageTask().execute();
         }
     }
 
@@ -214,7 +217,7 @@ public class NewsFragment extends Fragment {
         for (int i =0; i < jsonResultsArray.length(); i++) {
 
             JSONObject jsonNewsObject = jsonResultsArray.getJSONObject(i);
-            String title = jsonNewsObject.getString("title");
+            String title = jsonNewsObject.getString("titleNoFormatting");
             String content = jsonNewsObject.getString("content");
             String publisher = jsonNewsObject.getString("publisher");
             String published_date = jsonNewsObject.getString("publishedDate");
@@ -242,8 +245,8 @@ public class NewsFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mProgressDialog.setMessage("Downloading Images.Please wait...");
-            showProgressDialog();
+            //mProgressDialog.setMessage("Downloading Images.Please wait...");
+            //showProgressDialog();
         }
         @Override
         protected Void doInBackground(Void... urls) {
@@ -272,7 +275,7 @@ public class NewsFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             mRecyclerAdapter.notifyDataSetChanged();
-            hideProgressDialog();
+           // hideProgressDialog();
         }
     }
 

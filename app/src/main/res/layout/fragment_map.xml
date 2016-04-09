@@ -32,11 +32,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Large Text"
+                android:textSize="24sp"
                 android:id="@+id/map_title"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1" />
+                android:textColor="@android:color/holo_green_dark"
+                android:layout_gravity="center_horizontal" />
 
             <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
@@ -52,7 +51,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
                 android:id="@+id/map_subTitle"
                 android:layout_gravity="center_horizontal" />
 

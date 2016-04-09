@@ -2,10 +2,6 @@ package com.methodica.lizalinto.dummyinbox;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -39,7 +35,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         if(savedInstanceState == null){
             navigationView.setCheckedItem(R.id.nav_news);
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, NewsFragment.newInstance()).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, NewsFragment.newInstance(),"news").commit();
         }
 
     }
@@ -47,7 +43,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        mtoolbar.setTitle(R.string.nav_news_string);
+        if(getSupportFragmentManager().findFragmentById(R.id.fragment_container) instanceof NewsFragment ) {
+            mtoolbar.setTitle(R.string.nav_news_string);
+        }else{
+            mtoolbar.setTitle(R.string.nav_map_string);
+
+        }
     }
 
     @Override
@@ -69,11 +70,11 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_news) {
             mtoolbar.setTitle(R.string.nav_news_string);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, NewsFragment.newInstance()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, NewsFragment.newInstance(),"news").commit();
 
         } else if (id == R.id.nav_map) {
             mtoolbar.setTitle(R.string.nav_map_string);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, MapFragment.newInstance()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, MapFragment.newInstance(),"map").commit();
 
         }
 
